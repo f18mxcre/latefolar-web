@@ -1,0 +1,26 @@
+# Claude Code local settings (ツール権限キャッシュ等。プロジェクト内容ではないため除外)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Secrets / env (本サイトに実際のシークレットを置かない想定だが、Publicリポジトリのため念のため除外)
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.mobileprovision
+secrets.*
+credentials.json
+
+# Node系(将来ビルドツールを導入した場合に備えて)
+node_modules/
+npm-debug.log*
