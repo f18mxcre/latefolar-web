@@ -16,7 +16,12 @@
       <img class="brand-logo" src="assets/img/logo.svg" alt="Latefolar ロゴ">
       Latefolar<span class="brand-reading">(ラテフォラール)</span>
     </a>
-    <nav class="site-nav" aria-label="サイト内ナビゲーション">
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉する">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="サイト内ナビゲーション">
       <a href="index.html" aria-current="page">トップ</a>
       <a href="privacy.html">プライバシーポリシー</a>
       <a href="terms.html">利用規約</a>
@@ -56,12 +61,10 @@
   <section class="content-section">
     <div class="container">
       <h2>Latefolarについて</h2>
-      <p>
-        働く時間は、時に長く、時に厳しく感じられるものです。Latefolarは、時給や勤務時間の入力をもとに
-        「今、どのくらいの金額が増えているか」をリアルタイムに示すことで、これまで見えてこなかった
-        "頑張りの成果"を実感できるようにし、仕事の時間そのものを前向きに乗り越えていくための
-        サポートをすることを目指しています。
-      </p>
+      <p>働く時間は、時に長く、時に厳しく感じられるものです。</p>
+      <p>Latefolarは、時給や勤務時間の入力をもとに『今、どのくらいの金額が増えているか』をリアルタイムに示すことで、</p>
+      <p>これまで見えてこなかった『頑張りの成果』を実感できるようにし、</p>
+      <p>仕事の時間そのものを前向きに乗り越えていくためのサポートをすることを目指しています。</p>
     </div>
   </section>
 
@@ -90,5 +93,6 @@
   </div>
 </footer>
 
+<script src="assets/js/main.js"></script>
 </body>
 </html>
