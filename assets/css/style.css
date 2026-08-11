@@ -206,10 +206,25 @@ a:focus-visible {
   margin: 0 0 18px;
 }
 
+/* 全角句読点(。、)は文字セル内の右側に余白を持つため、行末に来ると
+   text-align:centerの中心がその分だけ左に寄って見える。行末の句点だけ
+   余白を打ち消して見た目の中心を揃える */
+.cjk-tail-fix {
+  margin-right: -0.15em;
+}
+
 .hero-lead {
   max-width: 560px;
   margin: 0 auto 36px;
   color: var(--color-text-muted);
+}
+
+.hero-lead p {
+  margin: 0;
+}
+
+.hero-lead p + p {
+  margin-top: 4px;
 }
 
 /* ---------- Store buttons (未公開のため disabled 表示) ---------- */
@@ -275,6 +290,11 @@ section.content-section + section.content-section {
 .content-section p {
   color: var(--color-text-muted);
   max-width: var(--content-max-width);
+}
+
+/* 意味的に分割されたくない語句を折り返し途中で分断しないための補助クラス */
+.nowrap {
+  white-space: nowrap;
 }
 
 /* ---------- Legal / long-form pages ---------- */
