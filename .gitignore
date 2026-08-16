@@ -1,5 +1,5 @@
-# Claude Code local settings (ツール権限キャッシュ等。プロジェクト内容ではないため除外)
-.claude/
+# Claude Code local settings (machine-specific, not shared)
+.claude/settings.local.json
 
 # OS
 .DS_Store
