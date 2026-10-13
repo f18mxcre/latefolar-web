@@ -100,9 +100,6 @@ a:focus-visible {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  /* ロゴのアートワークはviewBox(0 0 200 200)の幾何中心より右寄りに描画されているため、
-     見た目の中心を揃えるために視覚的に補正する(パス自体は変更しない) */
-  transform: translateX(-8.75%);
 }
 
 .brand-reading {
@@ -181,9 +178,6 @@ a:focus-visible {
   width: 88px;
   height: 88px;
   margin: 0 auto 24px;
-  /* ロゴのアートワークはviewBox(0 0 200 200)の幾何中心より右寄りに描画されているため、
-     見た目の中心を揃えるために視覚的に補正する(パス自体は変更しない) */
-  transform: translateX(-8.75%);
 }
 
 .hero h1 {
