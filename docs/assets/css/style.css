@@ -266,6 +266,12 @@ a:focus-visible {
   color: var(--color-text-faint);
 }
 
+.sns-note {
+  margin-top: 20px;
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+}
+
 /* ---------- Sections ---------- */
 
 section.content-section {
@@ -414,6 +420,12 @@ section.content-section + section.content-section {
 .footer-nav a {
   color: var(--color-text-muted);
   font-size: 0.85rem;
+}
+
+/* 外部サイトへのリンク(新しいタブで開く)の目印 */
+.ext {
+  font-size: 0.8em;
+  opacity: 0.8;
 }
 
 .footer-copy {
