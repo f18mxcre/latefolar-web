@@ -24,6 +24,10 @@ const PLATFORMS = ['ios', 'android'];
 const LINK_HOSTS = ['latefolar.com', 'apps.apple.com', 'play.google.com'];
 const MAX_LINKS = 3;
 const ID_MAX_LENGTH = 64;
+// 文言の長さの上限。全角・半角を区別せず、Unicode のコードポイント単位で数える(countChars)
+const TITLE_MAX_LENGTH = 40;
+const BODY_MAX_LENGTH = 1000;
+const LABEL_MAX_LENGTH = 16;
 
 // 英小文字・数字・ハイフンだけで、先頭と末尾はハイフン以外
 const ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
@@ -79,8 +83,11 @@ function checkDateTime(value, where, p, add) {
   return Date.UTC(y, mo - 1, d, h, mi, s) - offsetMinutes * 60 * 1000;
 }
 
-// 空でない文字列か(空白や改行だけも「空」とみなす)
-function checkText(obj, key, where, p, add) {
+// 文字の数。string.length(UTF-16 の単位)では絵文字などが2つに数えられるため、コードポイント単位で数える
+const countChars = (s) => [...s].length;
+
+// 空でない文字列で、上限の文字数以内か(空白や改行だけも「空」とみなす。改行や前後の空白も1文字として数える)
+function checkText(obj, key, maxLength, where, p, add) {
   if (!has(obj, key)) {
     add(where, p, 'required', '必須の欄がありません。');
     return;
@@ -90,6 +97,9 @@ function checkText(obj, key, where, p, add) {
     add(where, p, 'not_string', `文字列で書く必要があります(今は ${show(v)})。`);
   } else if (v.trim() === '') {
     add(where, p, 'empty', '空です(空白や改行だけも空とみなします)。');
+  } else if (countChars(v) > maxLength) {
+    add(where, p, 'too_long',
+      `${maxLength} 文字までです(今は ${countChars(v)} 文字。全角・半角を区別せず、1文字ずつ数えます)。`);
   }
 }
 
@@ -155,7 +165,7 @@ function checkLinks(item, index, add) {
       return;
     }
     checkUnknownKeys(link, LINK_KEYS, lw, (key) => `${lp}.${key}`, add);
-    checkText(link, 'label', lw('label'), `${lp}.label`, add);
+    checkText(link, 'label', LABEL_MAX_LENGTH, lw('label'), `${lp}.label`, add);
     if (!has(link, 'url')) {
       add(lw('url'), `${lp}.url`, 'required', '必須の欄がありません。');
     } else {
@@ -252,8 +262,8 @@ function validateAnnouncement(item, index, seenIds, add) {
   }
 
   // title・body
-  checkText(item, 'title', w('title'), `${base}.title`, add);
-  checkText(item, 'body', w('body'), `${base}.body`, add);
+  checkText(item, 'title', TITLE_MAX_LENGTH, w('title'), `${base}.title`, add);
+  checkText(item, 'body', BODY_MAX_LENGTH, w('body'), `${base}.body`, add);
 
   // published_at
   let publishedMs = null;
@@ -366,7 +376,7 @@ function main(argv) {
   return 0;
 }
 
-module.exports = { validateText, validateData };
+module.exports = { validateText, validateData, countChars };
 
 if (require.main === module) {
   process.exitCode = main(process.argv.slice(2));

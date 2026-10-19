@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { validateText } = require('../validate-announcements.js');
+const { validateText, countChars } = require('../validate-announcements.js');
 
 const FIXTURES = path.join(__dirname, 'fixtures');
 const SCRIPT = path.join(__dirname, '..', 'validate-announcements.js');
@@ -46,6 +46,10 @@ const INVALID = {
   'title-empty': [[`${A0}.title`, 'empty']],
   'title-whitespace-only': [[`${A0}.title`, 'empty']],
   'body-not-string': [[`${A0}.body`, 'not_string']],
+  'title-41-chars': [[`${A0}.title`, 'too_long']],
+  'body-1001-chars': [[`${A0}.body`, 'too_long']],
+  // 家族の絵文字は見た目は1文字だが、5つのコードポイントをつないだものなので 36 + 5 = 41 文字と数える
+  'title-zwj-emoji': [[`${A0}.title`, 'too_long']],
 
   'published-at-missing': [[`${A0}.published_at`, 'required']],
   'published-at-no-offset': [[`${A0}.published_at`, 'invalid_datetime_format']],
@@ -66,6 +70,7 @@ const INVALID = {
   'links-4-items': [[`${A0}.links`, 'too_many']],
   'link-label-empty': [[`${A0}.links[0].label`, 'empty']],
   'link-label-whitespace-only': [[`${A0}.links[0].label`, 'empty']],
+  'link-label-17-chars': [[`${A0}.links[0].label`, 'too_long']],
   'link-url-http': [[`${A0}.links[0].url`, 'url_not_https']],
   'link-url-www': [[`${A0}.links[0].url`, 'url_host_not_allowed']],
   'link-url-subdomain': [[`${A0}.links[0].url`, 'url_host_not_allowed']],
@@ -118,6 +123,14 @@ for (const [name, expected] of Object.entries(INVALID)) {
     }
   });
 }
+
+test('文字の数え方: 絵文字も1文字、全角・半角を区別しない(コードポイント単位)', () => {
+  assert.equal('🔔'.length, 2); // string.length(UTF-16 の単位)では2つに数えられる
+  assert.equal(countChars('🔔'), 1);
+  assert.equal(countChars('お知らせAbc'), 7); // 全角4文字 + 半角3文字
+  assert.equal(countChars('1行目\n2行目'), 7); // 改行も1文字
+  assert.equal(countChars('\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}'), 5); // ZWJ でつないだ絵文字は5つ
+});
 
 test('公開するファイル docs/announcements.json は問題なし', () => {
   assert.deepEqual(summarize(validateText(fs.readFileSync(PUBLISHED, 'utf8'))), []);
