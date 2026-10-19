@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "announcements": [
+    {
+      "id": "test-info",
+      "kind": "info",
+      "title": "テスト用のお知らせ",
+      "body": "テスト用の本文です。",
+      "published_at": "2026-11-01T09:00:00+09:00",
+      "platforms": [
+        "ios",
+        "web"
+      ]
+    }
+  ]
+}

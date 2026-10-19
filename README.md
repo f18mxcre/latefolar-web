@@ -14,10 +14,18 @@ Latefolar(ラテフォラール)の公式サイトです。プレーンなHTML/C
 latefolar-web/
 ├── .claude/
 │   └── skills/                # Claude Code 用のスキル(開発用。サイトには公開されない)
+├── .github/
+│   └── workflows/
+│       └── announcements.yml  # お知らせの JSON の確認(GitHub Actions)
 ├── .gitignore
 ├── README.md
+├── scripts/                   # 開発用のスクリプト(サイトには公開されない)
+│   ├── validate-announcements.js  # お知らせの JSON を確かめるスクリプト
+│   └── tests/                 # 上のスクリプトのテストと、テストの例(fixtures/)
 └── docs/                      # ★ 公式サイトとして公開されるフォルダ(GitHub Pages の公開元)
     ├── .nojekyll              # GitHub PagesのJekyll処理を無効化(プレーンHTML配信のため)
+    ├── CNAME                  # 独自ドメイン(latefolar.com)
+    ├── announcements.json     # アプリ内のお知らせ(アプリが読む)
     ├── index.html             # トップページ
     ├── privacy.html           # プライバシーポリシー(草案)
     ├── terms.html             # 利用規約(草案)
@@ -51,7 +59,7 @@ python -m http.server 8000 --directory docs
 ## GitHub Pages での公開設定
 
 このリポジトリは「ブランチからデプロイ(Deploy from a branch)」方式でGitHub Pagesに公開しています。
-ビルド不要のプレーンなHTML/CSSのため、GitHub Actionsによるビルドは行いません。
+ビルド不要のプレーンなHTML/CSSのため、GitHub Actionsによるビルドは行いません(GitHub Actions は、お知らせの JSON の確認にだけ使います)。
 
 1. GitHubリポジトリの **Settings > Pages** を開く
 2. **Source** を `Deploy from a branch` に設定
@@ -66,6 +74,36 @@ python -m http.server 8000 --directory docs
 `README.md`・`.gitignore` もサイトのURLから開ける状態でした。リポジトリは Public のため新たに漏れた情報は
 ありませんが、サイトとして公開する範囲を限定するため、公開用のファイルを `docs/` に分け、公開元を
 `/docs` に変更しました。
+
+## お知らせ(announcements.json)の出し方
+
+アプリ内のお知らせは `docs/announcements.json` に置き、アプリは `https://latefolar.com/announcements.json` を読みます。
+JSON の形などの仕様の正本は、バックエンドのリポジトリ(salary-countup-app)の `docs/design.md` の「お知らせ」です。
+
+このリポジトリは push するとそのまま公開されるため、次の手順で出します。
+
+1. 下書きは、リポジトリの外の `D:\latefolar-announcements\drafts\` に、1件1ファイルで作ります。
+   公開前の内容はリポジトリに入れません(Public リポジトリなので、commit すると履歴にも残るため)。
+2. 公開するときに初めて、`docs/announcements.json` に加えます。
+3. commit の前に、手元で次の2つを実行し、どちらも成功することを確かめます。
+
+   ```bash
+   node scripts/validate-announcements.js
+   ```
+
+   ```bash
+   node --test scripts/tests/validate-announcements.test.js
+   ```
+
+   問題があると、どのお知らせのどの欄が、なぜだめかを日本語で出し、終了コードが 0 以外になります。
+4. commit と push をします。push のあと、GitHub Actions の「お知らせの JSON の確認」が成功したことと、
+   `https://latefolar.com/announcements.json` の中身を確かめます。キャッシュのため、反映に10分ほど、
+   またはそれ以上かかることがあります。
+5. 一度出したお知らせの `id` は、あとから変えたり、使い回したりしません。
+
+GitHub Actions の確認は、公開を止めるものではなく、あとから気付くための仕組みです(push と同時に公開が始まるため)。
+公開の前に止めるのは、手順 3 の手元での確認です。スクリプトとテストは Node.js(24 系)だけで動き、
+外部のライブラリは使いません。
 
 ## セキュリティ・秘密情報について
 

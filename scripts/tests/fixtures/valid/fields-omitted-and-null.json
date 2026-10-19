@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "announcements": [
+    {
+      "id": "test-omitted",
+      "kind": "info",
+      "title": "テスト用のお知らせ",
+      "body": "テスト用の本文です。",
+      "published_at": "2026-11-01T09:00:00+09:00"
+    },
+    {
+      "id": "test-null",
+      "kind": "info",
+      "title": "テスト用のお知らせ",
+      "body": "テスト用の本文です。",
+      "published_at": "2026-11-01T09:00:00+09:00",
+      "expires_at": null,
+      "links": null,
+      "platforms": null,
+      "min_app_version": null,
+      "below_app_version": null
+    },
+    {
+      "id": "test-empty-links",
+      "kind": "info",
+      "title": "テスト用のお知らせ",
+      "body": "テスト用の本文です。",
+      "published_at": "2026-11-01T09:00:00+09:00",
+      "links": []
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "announcements": [
+    {
+      "id": "test-info",
+      "kind": "info",
+      "title": "テスト用のお知らせ",
+      "body": "テスト用の本文です。"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "announcements": [
+    {
+      "id": "test-important",
+      "kind": "important",
+      "title": "テスト用の重要なお知らせ",
+      "body": "テスト用の本文です。\n2行目です。",
+      "published_at": "2026-11-01T09:00:00+09:00",
+      "expires_at": "2026-10-31T09:00:00+09:00",
+      "links": [
+        {
+          "label": "公式サイトを見る",
+          "url": "https://latefolar.com/"
+        }
+      ],
+      "platforms": null,
+      "min_app_version": null,
+      "below_app_version": null
+    }
+  ]
+}

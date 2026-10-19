@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "announcements": [
+    {
+      "id": "example-terms-2026",
+      "kind": "important",
+      "title": "利用規約を改定します",
+      "body": "利用規約を改定します。\n(ここは例の文です)",
+      "published_at": "2026-11-01T09:00:00+09:00",
+      "expires_at": "2026-12-01T00:00:00+09:00",
+      "links": [
+        {
+          "label": "利用規約を見る",
+          "url": "https://latefolar.com/"
+        }
+      ],
+      "platforms": null,
+      "min_app_version": null,
+      "below_app_version": null
+    }
+  ]
+}
