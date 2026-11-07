@@ -1,0 +1,30 @@
+# 体験版(docs/try/)の計算の関数のテスト。
+# 公開はブランチから直接行われるため、これは公開を止めるものではなく、あとから気付くための確認。
+name: 体験版のテスト
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: 体験版の計算を確かめる
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: リポジトリを取得する
+        uses: actions/checkout@v7
+
+      - name: Node.js を用意する
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Node.js のバージョンを表示する
+        run: node --version
+
+      - name: 体験版の計算のテスト
+        run: node --test scripts/tests/trial-core.test.js

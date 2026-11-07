@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14151F">
+<title>Latefolar 体験版 | 働いた時間が、お給料になって増えていく。</title>
+<meta name="description" content="ラテフォラールのシンプルモードを、ブラウザでそのまま試せます。">
+<link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="try.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- T1 はじめて開いたとき(時給を変えるときも、この画面) -->
+  <section class="screen" id="screen-setup" data-screen="setup" hidden>
+    <header class="top">
+      <div class="brand"><img class="brand-logo" src="../assets/img/logo.svg" alt="">Latefolar</div>
+      <span class="badge">体験版</span>
+    </header>
+    <main class="body body-setup">
+      <h1 class="headline">働いた時間が、<br>お給料になって増えていく。</h1>
+      <p class="lead">ラテフォラールのシンプルモードを、ブラウザでそのまま試せます。</p>
+      <form class="wage-form" id="wage-form" novalidate>
+        <label class="field-label" for="wage-input">時給</label>
+        <div class="wage-field" id="wage-field">
+          <span class="wage-affix" aria-hidden="true">¥</span>
+          <input class="wage-input" id="wage-input" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" aria-describedby="wage-help wage-error">
+          <span class="wage-affix wage-unit" aria-hidden="true">円</span>
+        </div>
+        <p class="field-help" id="wage-help">あとから変えられます</p>
+        <p class="field-error" id="wage-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" id="start-button" type="submit">はじめる</button>
+      </form>
+      <p class="privacy-note">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <span>記録はこのブラウザの中だけに保存します。感想を送ったときは、その内容だけが届きます。</span>
+      </p>
+    </main>
+  </section>
+
+  <!-- T2 出勤前 -->
+  <section class="screen" id="screen-idle" data-screen="idle" hidden>
+    <header class="top">
+      <div class="brand"><img class="brand-logo" src="../assets/img/logo.svg" alt="">Latefolar</div>
+      <span class="badge">体験版</span>
+    </header>
+    <main class="body body-center">
+      <div class="mode-tile" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M6 4l6 8 6-8M12 12v8M7.5 13.5h9M7.5 17h9"/></svg>
+      </div>
+      <h2 class="mode-title">シンプルモード</h2>
+      <p class="mode-text">時間経過で金額がカウントアップ</p>
+      <div class="wage-chip">
+        <span>時給 <span id="idle-wage">¥1,200</span></span>
+        <span class="wage-chip-sep" aria-hidden="true">|</span>
+        <button class="link-button" id="change-wage" type="button">変える</button>
+      </div>
+    </main>
+    <div class="actions">
+      <button class="btn btn-primary btn-block" id="clock-in" type="button">
+        <svg class="icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>出勤する
+      </button>
+    </div>
+  </section>
+
+  <!-- T3 勤務中(T6 の「閉じていた間も…」もこの画面に出す) -->
+  <section class="screen" id="screen-working" data-screen="working" hidden>
+    <header class="top">
+      <span class="status-pill"><span class="dot dot-work" aria-hidden="true"></span>おしごと中</span>
+      <span class="badge">体験版</span>
+    </header>
+    <div class="away-banner" id="away-banner" role="status" hidden>
+      <svg class="icon icon-blue" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-3 2"/></svg>
+      <span id="away-text"></span>
+    </div>
+    <main class="body body-center">
+      <p class="stat-label">現在の金額</p>
+      <p class="amount amount-xl" id="work-amount">¥0</p>
+      <p class="stat-label">働いた時間</p>
+      <p class="clock" id="work-time">0:00:00</p>
+    </main>
+    <div class="actions actions-two">
+      <button class="btn btn-secondary" id="break-start" type="button">
+        <svg class="icon-fill" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>休憩する
+      </button>
+      <button class="btn btn-primary" id="clock-out" type="button">
+        <svg class="icon-fill" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>退勤する
+      </button>
+    </div>
+  </section>
+
+  <!-- T4 休憩中 -->
+  <section class="screen" id="screen-break" data-screen="break" hidden>
+    <header class="top">
+      <span class="status-pill"><span class="dot dot-break" aria-hidden="true"></span>休憩中</span>
+      <span class="badge">体験版</span>
+    </header>
+    <main class="body body-center">
+      <h2 class="break-title">休憩中</h2>
+      <p class="stat-label">今回の休憩</p>
+      <p class="clock clock-lg" id="break-time">0:00:00</p>
+      <div class="today-row">
+        <span class="today-label">今日の勤務</span>
+        <span class="today-value"><span id="today-work">0時間00分</span> / 8時間</span>
+      </div>
+      <div class="progress" role="progressbar" aria-label="今日の勤務(8時間まで)" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="today-progress">
+        <span class="progress-bar" id="today-progress-bar"></span>
+      </div>
+      <p class="stat-label stat-label-faint">現在の金額</p>
+      <p class="amount amount-paused" id="break-amount">¥0</p>
+      <p class="paused-note">※休憩時間中はカウントされません</p>
+    </main>
+    <div class="actions">
+      <button class="btn btn-primary btn-block" id="break-end" type="button">
+        <svg class="icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>仕事に戻る
+      </button>
+    </div>
+  </section>
+
+  <!-- T5 退勤 -->
+  <section class="screen screen-done" id="screen-done" data-screen="done" hidden>
+    <header class="top top-end">
+      <span class="badge">体験版</span>
+    </header>
+    <main class="body body-done">
+      <div class="celebrate">
+        <span class="confetti c1" aria-hidden="true"></span>
+        <span class="confetti c2" aria-hidden="true"></span>
+        <span class="confetti c3" aria-hidden="true"></span>
+        <span class="confetti c4" aria-hidden="true"></span>
+        <span class="confetti c5" aria-hidden="true"></span>
+        <span class="confetti c6" aria-hidden="true"></span>
+        <span class="confetti c7" aria-hidden="true"></span>
+        <span class="confetti c8" aria-hidden="true"></span>
+        <h2 class="done-title">おつかれさまでした</h2>
+        <p class="done-sub">おめでとう!</p>
+        <p class="stat-label">今回の給料</p>
+        <p class="amount amount-xl" id="done-amount">¥0</p>
+        <p class="total-chip">今日の合計 <strong id="done-today">¥0</strong></p>
+      </div>
+
+      <section class="feedback" aria-labelledby="feedback-title">
+        <h3 class="feedback-title" id="feedback-title">体験してみて、どうでしたか?</h3>
+        <p class="feedback-note">※名前やメールアドレスは不要です。<br>個人情報は記入しないでください。</p>
+
+        <p class="q-label" id="q1-label">アプリが出たら、使ってみたいですか?</p>
+        <div class="choices choices-3" role="group" aria-labelledby="q1-label" data-question="willUse">
+          <button class="choice" type="button" aria-pressed="false" data-value="使いたい">使いたい</button>
+          <button class="choice" type="button" aria-pressed="false" data-value="たぶん">たぶん</button>
+          <button class="choice" type="button" aria-pressed="false" data-value="今はいい">今はいい</button>
+        </div>
+
+        <p class="q-label" id="q2-label">どこで知りましたか?</p>
+        <div class="choices choices-wrap" role="group" aria-labelledby="q2-label" data-question="source">
+          <button class="choice choice-pill" type="button" aria-pressed="false" data-value="YouTube">YouTube</button>
+          <button class="choice choice-pill" type="button" aria-pressed="false" data-value="TikTok">TikTok</button>
+          <button class="choice choice-pill" type="button" aria-pressed="false" data-value="X">X</button>
+          <button class="choice choice-pill" type="button" aria-pressed="false" data-value="その他">その他</button>
+        </div>
+
+        <label class="q-label" for="comment">ご感想・ほしい機能 <span class="q-optional">(書きたい人だけ)</span></label>
+        <textarea class="comment" id="comment" rows="4" placeholder="自由にどうぞ" aria-describedby="comment-count"></textarea>
+        <p class="comment-count" id="comment-count">0 / 500</p>
+
+        <a class="btn btn-light btn-block" id="send-feedback" href="#" target="_blank" rel="noopener">感想を送る</a>
+        <p class="send-note" id="send-note" role="status" hidden>フォームを新しいタブで開きました。フォームの「送信」を押すと届きます。</p>
+      </section>
+
+      <p class="dev-note">アプリは開発中です。アプリでは、きろくや、ほかのモードも使えるようになる予定です。</p>
+      <p class="hashtag-note">X でも #ラテフォラール体験版 で感想をどうぞ</p>
+      <a class="btn btn-outline btn-block" href="https://x.com/latefolar" target="_blank" rel="noopener">公開のお知らせを X で受け取る(@latefolar)</a>
+    </main>
+    <div class="actions">
+      <button class="btn btn-primary btn-block" id="close-done" type="button">閉じる</button>
+    </div>
+  </section>
+
+  <!-- いちばん下の帯(T5 では出さない) -->
+  <footer class="dev-band" id="dev-band" hidden>
+    <span>アプリは開発中です。公開は公式 X でお知らせします</span>
+    <a href="https://x.com/latefolar" target="_blank" rel="noopener">@latefolar</a>
+  </footer>
+
+  <noscript><p class="noscript">体験版を使うには、ブラウザの JavaScript をオンにしてください。</p></noscript>
+</div>
+<script src="trial-core.js"></script>
+<script src="try.js"></script>
+</body>
+</html>

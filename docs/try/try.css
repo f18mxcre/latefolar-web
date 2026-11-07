@@ -1,0 +1,703 @@
+/* ==========================================================================
+   Latefolar 体験版のスタイル
+   色は公式サイト(../assets/css/style.css)と同じ値。フォントは端末のものだけ(外部の読み込みなし)
+   スマホが基本。PC では幅 430px までの同じ画面を真ん中に置く
+   ========================================================================== */
+
+:root {
+  --color-amber: #F5B942;
+  --color-bg: #14151F;
+  --color-bg-card: #1f2130;
+  --color-bg-input: #15161f;
+  --color-text: #F5F2EA;
+  --color-text-muted: rgba(245, 242, 234, 0.72);
+  --color-text-faint: rgba(245, 242, 234, 0.5);
+  --color-border-soft: rgba(245, 242, 234, 0.12);
+  --color-on-amber: #14151F;
+  --color-work: #7fcfa8;
+  --color-break: #8fb0ff;
+  --color-error: #ff9b8a;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, Roboto, sans-serif;
+  --app-max-width: 430px;
+  --gutter: 24px;
+  --radius-card: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--color-amber);
+}
+
+/* ---------- 画面の枠 ---------- */
+
+.app {
+  max-width: var(--app-max-width);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(20px, env(safe-area-inset-top)) var(--gutter) max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.top-end {
+  justify-content: flex-end;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.brand-logo {
+  width: 28px;
+  height: 28px;
+}
+
+.badge {
+  border: 1.5px solid var(--color-amber);
+  color: var(--color-amber);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 0.95rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.dot-work {
+  background: var(--color-work);
+}
+
+.dot-break {
+  background: var(--color-break);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.body-center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.actions {
+  padding-top: 16px;
+}
+
+.actions-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ---------- ボタン ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 1.12rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible,
+.choice:focus-visible,
+.link-button:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--color-amber);
+  color: var(--color-on-amber);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--color-bg-card);
+  border-color: var(--color-border-soft);
+  color: var(--color-text);
+}
+
+.btn-light {
+  background: var(--color-text);
+  color: var(--color-on-amber);
+  min-height: 52px;
+  font-size: 1.02rem;
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--color-border-soft);
+  color: var(--color-text);
+  min-height: 52px;
+  font-size: 0.95rem;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.icon-fill {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.icon-blue {
+  color: var(--color-break);
+}
+
+.link-button {
+  background: none;
+  border: 0;
+  padding: 4px 2px;
+  color: var(--color-amber);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- T1 はじめて開いたとき ---------- */
+
+.body-setup {
+  justify-content: center;
+  padding: 32px 0 16px;
+}
+
+.headline {
+  margin: 0 0 16px;
+  font-size: 1.55rem;
+  line-height: 1.45;
+}
+
+.lead {
+  margin: 0 0 32px;
+  color: var(--color-text-muted);
+}
+
+.field-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.wage-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-card);
+  padding: 10px 20px;
+}
+
+.wage-field:focus-within {
+  border-color: var(--color-amber);
+}
+
+.wage-field.is-invalid {
+  border-color: var(--color-error);
+}
+
+.wage-affix {
+  color: var(--color-text-faint);
+  font-size: 1.4rem;
+}
+
+.wage-unit {
+  font-size: 1rem;
+}
+
+.wage-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 4px 0;
+}
+
+.field-help {
+  margin: 8px 0 0;
+  color: var(--color-text-faint);
+  font-size: 0.88rem;
+}
+
+.field-error {
+  margin: 6px 0 0;
+  color: var(--color-error);
+  font-size: 0.88rem;
+}
+
+.wage-form .btn {
+  margin-top: 28px;
+}
+
+.privacy-note {
+  display: flex;
+  gap: 10px;
+  margin: 24px 0 0;
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+}
+
+.privacy-note .icon {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+/* ---------- T2 出勤前 ---------- */
+
+.mode-tile {
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  background: var(--color-amber);
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+}
+
+.mode-tile svg {
+  width: 44px;
+  height: 44px;
+  fill: none;
+  stroke: var(--color-on-amber);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mode-title {
+  margin: 0 0 8px;
+  font-size: 1.55rem;
+}
+
+.mode-text {
+  margin: 0 0 20px;
+  color: var(--color-text-muted);
+}
+
+.wage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.wage-chip-sep {
+  color: var(--color-text-faint);
+}
+
+/* ---------- T3 勤務中・T4 休憩中 ---------- */
+
+.stat-label {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 0.92rem;
+}
+
+.amount {
+  margin: 4px 0 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.amount-xl {
+  color: var(--color-amber);
+  font-size: clamp(2.8rem, 15vw, 4.2rem);
+  overflow-wrap: anywhere;
+}
+
+.clock {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock-lg {
+  margin: 0 0 24px;
+  font-size: clamp(2.4rem, 12vw, 3.1rem);
+  font-weight: 800;
+}
+
+.break-title {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+}
+
+.today-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.today-label {
+  color: var(--color-text-faint);
+  font-size: 0.92rem;
+}
+
+.today-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-bg-card);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-amber);
+  border-radius: 999px;
+}
+
+.stat-label-faint {
+  opacity: 0.8;
+}
+
+.amount-paused {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 2rem;
+}
+
+.paused-note {
+  margin: 2px 0 0;
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+}
+
+.away-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 16px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  font-size: 0.98rem;
+}
+
+/* ---------- T5 退勤 ---------- */
+
+.body-done {
+  padding: 8px 0 0;
+}
+
+.celebrate {
+  position: relative;
+  text-align: center;
+  padding: 16px 0 8px;
+}
+
+.done-title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.done-sub {
+  margin: 4px 0 20px;
+  color: var(--color-text-muted);
+}
+
+.total-chip {
+  display: inline-block;
+  margin: 0;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 999px;
+  padding: 6px 18px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-chip strong {
+  margin-left: 8px;
+  color: var(--color-text);
+  font-size: 1.05rem;
+}
+
+.confetti {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.c1 { top: 4%; left: 4%; width: 12px; height: 4px; border-radius: 2px; background: var(--color-amber); transform: rotate(28deg); }
+.c2 { top: 0; left: 48%; width: 7px; height: 7px; border-radius: 50%; background: var(--color-text); }
+.c3 { top: 8%; right: 4%; width: 14px; height: 4px; border-radius: 2px; background: var(--color-break); transform: rotate(-24deg); }
+.c4 { top: 24%; left: 18%; width: 4px; height: 10px; border-radius: 2px; background: var(--color-work); transform: rotate(-18deg); }
+.c5 { top: 21%; right: 26%; width: 7px; height: 7px; border-radius: 50%; background: var(--color-amber); }
+.c6 { top: 36%; right: 18%; width: 12px; height: 4px; border-radius: 2px; background: var(--color-amber); transform: rotate(12deg); }
+.c7 { top: 64%; left: 6%; width: 6px; height: 6px; border-radius: 50%; background: var(--color-text); }
+.c8 { top: 60%; right: 6%; width: 7px; height: 7px; border-radius: 50%; background: var(--color-work); }
+
+.feedback {
+  margin-top: 28px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-card);
+  padding: 20px 18px;
+}
+
+.feedback-title {
+  margin: 0;
+  font-size: 1.18rem;
+}
+
+.feedback-note {
+  margin: 4px 0 4px;
+  color: var(--color-text-faint);
+  font-size: 0.82rem;
+}
+
+.q-label {
+  display: block;
+  margin: 18px 0 10px;
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.q-optional {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+
+.choices {
+  display: flex;
+  gap: 8px;
+}
+
+.choices-3 .choice {
+  flex: 1;
+}
+
+.choices-wrap {
+  flex-wrap: wrap;
+}
+
+.choice {
+  min-height: 48px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border-soft);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.choice-pill {
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
+}
+
+.choices-3 .choice[aria-pressed="true"] {
+  background: var(--color-amber);
+  border-color: var(--color-amber);
+  color: var(--color-on-amber);
+  font-weight: 700;
+}
+
+.choice-pill[aria-pressed="true"] {
+  border-color: var(--color-amber);
+  color: var(--color-amber);
+  font-weight: 700;
+}
+
+.comment {
+  display: block;
+  width: 100%;
+  min-height: 104px;
+  resize: vertical;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 16px; /* iPhone で入力欄が拡大されないように 16px 以上 */
+  line-height: 1.6;
+}
+
+.comment::placeholder {
+  color: var(--color-text-faint);
+}
+
+.comment:focus {
+  outline: none;
+  border-color: var(--color-amber);
+}
+
+.comment-count {
+  margin: 6px 0 16px;
+  text-align: right;
+  color: var(--color-text-faint);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.send-note {
+  margin: 10px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.dev-note {
+  margin: 24px 0 8px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.hashtag-note {
+  margin: 0 0 14px;
+  text-align: center;
+  color: var(--color-text-faint);
+  font-size: 0.88rem;
+}
+
+/* ---------- いちばん下の帯 ---------- */
+
+.dev-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+}
+
+.dev-band a {
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.noscript {
+  margin: 40px 0;
+  text-align: center;
+}

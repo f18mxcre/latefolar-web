@@ -16,12 +16,13 @@ latefolar-web/
 │   └── skills/                # Claude Code 用のスキル(開発用。サイトには公開されない)
 ├── .github/
 │   └── workflows/
-│       └── announcements.yml  # お知らせの JSON の確認(GitHub Actions)
+│       ├── announcements.yml  # お知らせの JSON の確認(GitHub Actions)
+│       └── trial.yml          # 体験版の計算のテスト(GitHub Actions)
 ├── .gitignore
 ├── README.md
 ├── scripts/                   # 開発用のスクリプト(サイトには公開されない)
 │   ├── validate-announcements.js  # お知らせの JSON を確かめるスクリプト
-│   └── tests/                 # 上のスクリプトのテストと、テストの例(fixtures/)
+│   └── tests/                 # テスト(お知らせのスクリプト・体験版の計算)と、テストの例(fixtures/)
 └── docs/                      # ★ 公式サイトとして公開されるフォルダ(GitHub Pages の公開元)
     ├── .nojekyll              # GitHub PagesのJekyll処理を無効化(プレーンHTML配信のため)
     ├── CNAME                  # 独自ドメイン(latefolar.com)
@@ -31,6 +32,11 @@ latefolar-web/
     ├── terms.html             # 利用規約(草案)
     ├── support.html           # サポート(問い合わせ)
     ├── account-delete.html    # アカウント削除案内(簡易版)
+    ├── try/                   # ブラウザの体験版(https://latefolar.com/try/)
+    │   ├── index.html         # 体験版の画面(T1〜T6)
+    │   ├── try.css            # 体験版だけのスタイル
+    │   ├── try.js             # 画面の動き・記録(localStorage)
+    │   └── trial-core.js      # 計算だけの関数(テストからも使う)
     └── assets/
         ├── css/
         │   └── style.css      # 共通スタイル
@@ -59,7 +65,7 @@ python -m http.server 8000 --directory docs
 ## GitHub Pages での公開設定
 
 このリポジトリは「ブランチからデプロイ(Deploy from a branch)」方式でGitHub Pagesに公開しています。
-ビルド不要のプレーンなHTML/CSSのため、GitHub Actionsによるビルドは行いません(GitHub Actions は、お知らせの JSON の確認にだけ使います)。
+ビルド不要のプレーンなHTML/CSSのため、GitHub Actionsによるビルドは行いません(GitHub Actions は、お知らせの JSON の確認と、体験版の計算のテストにだけ使います)。
 
 1. GitHubリポジトリの **Settings > Pages** を開く
 2. **Source** を `Deploy from a branch` に設定
@@ -108,6 +114,40 @@ JSON の形などの仕様の正本は、バックエンドのリポジトリ(sa
 GitHub Actions の確認は、公開を止めるものではなく、あとから気付くための仕組みです(push と同時に公開が始まるため)。
 公開の前に止めるのは、手順 3 の手元での確認です。スクリプトとテストは Node.js(24 系)だけで動き、
 外部のライブラリは使いません。
+
+## 体験版(docs/try/)
+
+`https://latefolar.com/try/` で、アプリのシンプルモードをブラウザで試せます(画面は T1〜T6 のモックアップに合わせています)。
+`main` に取り込むと公開されるため、取り込む日はユーザーが決めます。トップページからのリンクも、公開の日に別に決めます。
+
+- 時刻は、出勤・休憩の始まり・休憩の終わりの時刻を覚えて、そこから毎回計算します(ページを閉じていた間も数え続けます)。
+  金額は「働いた秒数 × 時給 ÷ 3600」を切り捨てた円で、休憩の時間は入れません。
+- 記録は、ブラウザの localStorage(`latefolar-trial-v1`)だけに置きます。使えないときは、メモリだけで動きます。
+  今日の合計は、退勤した日の端末の日付で数えます。
+- アクセス解析・広告・外部のスクリプト・外部のフォントは使いません。
+- 感想は、Google フォームの事前入力のリンクを新しいタブで開き、本人がフォームの「送信」を押したときだけ届きます。
+  リンクに入れるのは、選んだ答えと書いた感想だけです(時給・金額・働いた時間は入れません)。
+- 時給は 1〜100,000円、感想は 500文字まで(絵文字も1文字として数える)です。
+
+計算の関数(`docs/try/trial-core.js`)のテストは、次のコマンドで動かします(GitHub Actions の「体験版のテスト」でも動きます)。
+
+```bash
+node --test scripts/tests/trial-core.test.js
+```
+
+### iPhone で確かめるとき
+
+1. PC で、`docs/` を LAN に出す簡易サーバーを動かします(例: Python があるとき)。
+
+   ```bash
+   python -m http.server 8080 --bind 0.0.0.0 --directory docs
+   ```
+
+2. 同じ Wi-Fi(同じルーター)につないだ iPhone の Safari で、`http://<PC の IP アドレス>:8080/try/` を開きます。
+3. Windows のファイアウォールが通信の許可を聞いてくることがあります。許可するかどうかは、その場で決めてください。
+4. 確かめ終わったら、サーバーを止めます。
+
+LAN のアドレスで開いたときの記録は、`latefolar.com` で開いたときの記録とは別に保存されます。
 
 ## セキュリティ・秘密情報について
 
