@@ -230,6 +230,17 @@ a {
   transform: translateY(1px);
 }
 
+/* 長い文字のボタン: 1行に収まらないときは、かたまり(.nowrap)の間で2行に分ける */
+.btn-wrap {
+  flex-wrap: wrap;
+  gap: 0;
+  text-align: center;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
 .icon-fill {
   width: 20px;
   height: 20px;
@@ -624,6 +635,16 @@ a {
 
 .choices-3 .choice {
   flex: 1;
+  white-space: nowrap;
+}
+
+/* 狭い画面(360px 未満)では、3つ並びの選ぶボタンの文字が折り返さないよう、余白と文字を少し小さくする */
+@media (max-width: 359px) {
+  .choices-3 .choice {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 0.9rem;
+  }
 }
 
 .choices-wrap {
