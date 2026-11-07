@@ -158,6 +158,14 @@ a {
   gap: 12px;
 }
 
+/* 2つ並びのボタンは、狭い画面(320px)でも文字が折り返さないよう、左右の余白を狭める */
+.actions-two .btn {
+  padding-left: 12px;
+  padding-right: 12px;
+  gap: 8px;
+  white-space: nowrap;
+}
+
 /* ---------- ボタン ---------- */
 
 .btn {
@@ -412,7 +420,33 @@ a {
 .amount-xl {
   color: var(--color-amber);
   font-size: clamp(2.8rem, 15vw, 4.2rem);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+}
+
+/* 勤務中の金額: 桁が増えたら文字を小さくして1行に収める(--amount-length は try.js が入れる文字の数) */
+.body-center {
+  container-type: inline-size;
+}
+
+@supports (font-size: 1cqi) {
+  .amount-fit {
+    font-size: clamp(1.6rem, min(15vw, calc(100cqi / var(--amount-length, 6) / 0.68)), 4.2rem);
+  }
+}
+
+/* 数字の幅をそろえる枠(try.js の setDigits)。1ch は「0」の幅 */
+.digit {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+/* 小数(.83 の部分)は、円の数字の半分くらいの大きさで、少し控えめな色 */
+.amount-frac {
+  font-size: 0.5em;
+  margin-left: 0.04em;
+  color: rgba(245, 185, 66, 0.62);
+  letter-spacing: 0;
 }
 
 .clock {

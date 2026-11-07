@@ -58,7 +58,8 @@
   }
 
   function formatNumber(n) {
-    return String(Math.trunc(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var s = typeof n === "bigint" ? String(n) : String(Math.trunc(n));
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   function formatYen(n) {
@@ -115,9 +116,24 @@
     return Math.max(0, Math.floor((now - session.breakStart) / 1000));
   }
 
-  // 金額 = 働いた秒数 × 時給 ÷ 3600 を切り捨てた円
+  // 金額(0.01円単位の整数)= 働いた秒数 × 時給 × 100 ÷ 3600 を切り捨てたもの(= 秒数 × 時給 ÷ 36)
+  // 浮動小数点は使わず、BigInt の整数の割り算で出す(桁あふれもしない)
+  function earningsCents(seconds, wage) {
+    var s = BigInt(Math.max(0, Math.floor(seconds)));
+    return (s * BigInt(wage)) / BigInt(36);
+  }
+
+  // 金額(円)= 0.01円単位の整数を 100 で割って切り捨てたもの
+  // (= 働いた秒数 × 時給 ÷ 3600 を切り捨てた円。切り捨てを2回しても1回と同じ)
   function earnings(seconds, wage) {
-    return Math.floor((Math.max(0, Math.floor(seconds)) * wage) / 3600);
+    return Number(earningsCents(seconds, wage) / BigInt(100));
+  }
+
+  // 0.01円単位の整数を、表示の「¥5」と「.83」に分ける
+  function formatYenParts(cents) {
+    var c = typeof cents === "bigint" ? cents : BigInt(cents);
+    var frac = Number(c % BigInt(100));
+    return { yen: "¥" + formatNumber(c / BigInt(100)), frac: "." + pad2(frac) };
   }
 
   // 端末の日付(YYYY-MM-DD)
@@ -196,7 +212,9 @@
     formatDuration: formatDuration,
     workedSeconds: workedSeconds,
     currentBreakSeconds: currentBreakSeconds,
+    earningsCents: earningsCents,
     earnings: earnings,
+    formatYenParts: formatYenParts,
     localDateKey: localDateKey,
     todayTotals: todayTotals,
     addToHistory: addToHistory,

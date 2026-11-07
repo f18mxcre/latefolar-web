@@ -132,6 +132,36 @@
     }
   }
 
+  // 数字を1文字ずつ同じ幅の枠に入れて書く。tabular-nums に対応していないフォント
+  // (例: Windows の Segoe UI Black は「1」だけ幅が狭い)でも、毎秒数字が変わったときに位置が揺れないようにする
+  function setDigits(id, text) {
+    var el = $(id);
+    if (el.getAttribute("data-text") === text) {
+      return;
+    }
+    el.setAttribute("data-text", text);
+    el.textContent = "";
+    Array.prototype.forEach.call(text, function (ch) {
+      if (ch >= "0" && ch <= "9") {
+        var span = document.createElement("span");
+        span.className = "digit";
+        span.textContent = ch;
+        el.appendChild(span);
+      } else {
+        el.appendChild(document.createTextNode(ch));
+      }
+    });
+  }
+
+  // 桁が増えても1行に収まるように、文字の数(小数は半分の大きさなので半分に数える)を CSS に渡す
+  function fitAmount(id, length) {
+    var el = $(id);
+    var value = String(Math.max(6, length));
+    if (el.style.getPropertyValue("--amount-length") !== value) {
+      el.style.setProperty("--amount-length", value);
+    }
+  }
+
   function render() {
     var now = Date.now();
     var phase = state.phase;
@@ -139,7 +169,11 @@
       setText("idle-wage", core.formatYen(state.wage));
     } else if (phase === "working") {
       var worked = core.workedSeconds(state.session, now);
-      setText("work-amount", core.formatYen(core.earnings(worked, state.wage)));
+      // 勤務中の金額は小数2けたまで(円の部分と小数の部分に分けて出す)
+      var parts = core.formatYenParts(core.earningsCents(worked, state.wage));
+      setDigits("work-yen", parts.yen);
+      setDigits("work-frac", parts.frac);
+      fitAmount("work-amount", parts.yen.length + parts.frac.length * 0.5);
       setText("work-time", core.formatHMS(worked));
       $("away-banner").hidden = !state.awayMs;
       if (state.awayMs) {

@@ -44,6 +44,68 @@ test('金額: 働いた秒数 × 時給 ÷ 3600 を切り捨てた円', () => {
   assert.equal(core.earnings(3600, 1), 1);
 });
 
+test('金額の小数2けた: 0.01円単位の整数(秒数 × 時給 × 100 ÷ 3600 の切り捨て)', () => {
+  assert.equal(typeof core.earningsCents(1, 1200), 'bigint');
+  assert.equal(core.earningsCents(0, 1200), 0n);
+  assert.equal(core.earningsCents(1, 1200), 33n); // ¥0.33
+  assert.equal(core.earningsCents(3, 1200), 100n); // ¥1.00
+  assert.equal(core.earningsCents(-5, 1200), 0n);
+  assert.equal(core.earningsCents(2.9, 1200), 66n); // 1秒未満は切り捨ててから
+});
+
+test('金額の小数2けた: 時給 ¥3,000 で 6秒と 7秒の小数が違う(円は同じ ¥5)', () => {
+  assert.deepEqual(core.formatYenParts(core.earningsCents(6, 3000)), { yen: '¥5', frac: '.00' });
+  assert.deepEqual(core.formatYenParts(core.earningsCents(7, 3000)), { yen: '¥5', frac: '.83' });
+  assert.equal(core.earnings(6, 3000), core.earnings(7, 3000)); // 円だけだと止まって見えていた
+});
+
+test('金額の小数2けた: 時給 ¥1,200 で、毎秒小数が変わる', () => {
+  let prev = null;
+  for (let s = 0; s <= 3600; s++) {
+    const cents = core.earningsCents(s, 1200);
+    if (prev !== null) {
+      assert.ok(cents > prev, `${s}秒で増えていない`);
+    }
+    prev = cents;
+  }
+  // 時給がいちばん低い ¥1 でも、36秒ごとに 0.01円ずつ増える
+  assert.equal(core.earningsCents(35, 1), 0n);
+  assert.equal(core.earningsCents(36, 1), 1n);
+});
+
+test('金額の小数2けた: 円の部分は、今までの円までの値と同じ', () => {
+  const wages = [1, 7, 999, 1000, 1200, 1234, 3000, 3600, 3601, 7200, 12345, 99999, 100000];
+  for (const w of wages) {
+    for (let s = 0; s <= 20000; s += 7) {
+      const old = Math.floor((s * w) / 3600); // これまでの計算(この範囲では整数のまま正しく出る)
+      assert.equal(core.earnings(s, w), old, `時給 ${w}・${s}秒`);
+      assert.equal(core.earningsCents(s, w) / 100n, BigInt(old), `時給 ${w}・${s}秒(小数の整数から)`);
+    }
+  }
+});
+
+test('金額の小数2けた: 上限の時給で長い勤務でも正しい(桁あふれしない)', () => {
+  assert.deepEqual(core.formatYenParts(core.earningsCents(8 * 3600, 100000)), { yen: '¥800,000', frac: '.00' });
+  assert.deepEqual(core.formatYenParts(core.earningsCents(8 * 3600 + 1, 100000)), { yen: '¥800,027', frac: '.77' });
+  // 10年(87,600時間)働き続けた場合: ¥100,000 × 87,600 = ¥8,760,000,000
+  const tenYears = 10 * 365 * 24 * 3600;
+  assert.equal(core.earningsCents(tenYears, 100000), 876000000000n);
+  assert.equal(core.earnings(tenYears, 100000), 8760000000);
+  // ふつうの数の計算では桁があふれる長さ(秒数 × 時給 が 2^53 を超える)でも、整数のまま正しい
+  const huge = 1e12; // 約3万年
+  assert.ok(!Number.isSafeInteger(huge * 100000));
+  assert.equal(core.earningsCents(huge, 100000), (1000000000000n * 100000n) / 36n);
+  assert.deepEqual(core.formatYenParts(core.earningsCents(huge, 100000)), { yen: '¥27,777,777,777,777', frac: '.77' });
+});
+
+test('金額の表示: 3けたごとの区切りと小数2けた', () => {
+  assert.deepEqual(core.formatYenParts(0n), { yen: '¥0', frac: '.00' });
+  assert.deepEqual(core.formatYenParts(5n), { yen: '¥0', frac: '.05' });
+  assert.deepEqual(core.formatYenParts(123456789n), { yen: '¥1,234,567', frac: '.89' });
+  assert.deepEqual(core.formatYenParts(83), { yen: '¥0', frac: '.83' }); // 数でも受け付ける
+  assert.equal(core.formatNumber(1234567n), '1,234,567');
+});
+
 test('働いた時間: 覚えた時刻から計算し、休憩を除く', () => {
   const session = { start: T0, breaks: [], breakStart: null };
   assert.equal(core.workedSeconds(session, T0), 0);
