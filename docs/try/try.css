@@ -597,7 +597,8 @@ a {
 .c7 { top: 64%; left: 6%; width: 6px; height: 6px; border-radius: 50%; background: var(--color-text); }
 .c8 { top: 60%; right: 6%; width: 7px; height: 7px; border-radius: 50%; background: var(--color-work); }
 
-.feedback {
+.feedback,
+.share {
   margin-top: 28px;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-soft);
@@ -723,11 +724,157 @@ a {
   color: var(--color-text-muted);
 }
 
-.hashtag-note {
-  margin: 0 0 14px;
-  text-align: center;
+/* ---------- T5 シェア(カードの形は .feedback と同じ) ---------- */
+
+.share-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* チェックボックスは、暗い地に枠のある四角(チェックを入れると琥珀色) */
+.check-input {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 1px solid rgba(245, 242, 234, 0.35);
+  border-radius: 4px;
+  background: var(--color-bg-input);
+  cursor: pointer;
+}
+
+.check-input::after {
+  content: "";
+  width: 11px;
+  height: 6px;
+  border-left: 2.5px solid var(--color-on-amber);
+  border-bottom: 2.5px solid var(--color-on-amber);
+  transform: translateY(-1px) rotate(-45deg);
+  opacity: 0;
+}
+
+.check-input:checked {
+  background: var(--color-amber);
+  border-color: var(--color-amber);
+}
+
+.check-input:checked::after {
+  opacity: 1;
+}
+
+.check-input:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
+}
+
+/* 投稿する文: 少し暗い地の箱に、うすい色の文字 */
+.share-text {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  background: var(--color-bg-input);
+  border-radius: 12px;
   color: var(--color-text-faint);
   font-size: 0.88rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* 2つのボタンは同じ幅。「ほかのアプリ」が出ないときは「X でシェア」が横いっぱいになる */
+.share-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.share-button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 52px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+/* ---------- T5 テーマソング ---------- */
+
+.song {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 14px;
+  padding: 14px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-card);
+}
+
+.song-jacket {
+  flex: none;
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+}
+
+.song-body {
+  min-width: 0;
+}
+
+.song-eyebrow {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 0.75rem;
+}
+
+.song-title {
+  margin: 2px 0 0;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.song-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.song-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid rgba(245, 185, 66, 0.6);
+  border-radius: 999px;
+  color: var(--color-amber);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.song-link:hover {
+  background: rgba(245, 185, 66, 0.12);
+}
+
+.song-link:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
 }
 
 /* ---------- いちばん下の帯 ---------- */

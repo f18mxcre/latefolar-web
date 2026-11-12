@@ -140,6 +140,19 @@
         <p class="total-chip">今日の合計 <strong id="done-today">¥0</strong></p>
       </div>
 
+      <section class="share" aria-labelledby="share-title">
+        <h3 class="share-title" id="share-title">体験したことをシェアする</h3>
+        <label class="check">
+          <input class="check-input" id="share-amount" type="checkbox" autocomplete="off">
+          <span>今回の給料の金額も入れる</span>
+        </label>
+        <p class="share-text" id="share-text" aria-live="polite"></p>
+        <div class="share-actions">
+          <a class="btn btn-light share-button" id="share-x" href="https://x.com/intent/tweet" target="_blank" rel="noopener noreferrer">X でシェア</a>
+          <button class="btn btn-outline share-button" id="share-other" type="button" hidden>ほかのアプリ</button>
+        </div>
+      </section>
+
       <section class="feedback" aria-labelledby="feedback-title">
         <h3 class="feedback-title" id="feedback-title">体験してみて、どうでしたか?</h3>
         <p class="feedback-note">※名前やメールアドレスは不要です。<br>個人情報は記入しないでください。</p>
@@ -168,7 +181,17 @@
       </section>
 
       <p class="dev-note">アプリは開発中です。アプリでは、きろくや、ほかのモードも使えるようになる予定です。</p>
-      <p class="hashtag-note">X でも #ラテフォラール体験版 で感想をどうぞ</p>
+      <section class="song" aria-labelledby="song-title">
+        <img class="song-jacket" src="../assets/img/theme-song-jacket.jpg" width="72" height="72" alt="「8時間。君との関係」のジャケット">
+        <div class="song-body">
+          <p class="song-eyebrow">ラテフォラールのテーマソング</p>
+          <p class="song-title" id="song-title">8時間。君との関係</p>
+          <div class="song-links">
+            <a class="song-link" href="https://youtu.be/jfiVM2Bw_CU" target="_blank" rel="noopener noreferrer">MV を見る</a>
+            <a class="song-link" href="https://distrokid.com/hyperfollow/latefolar/8" target="_blank" rel="noopener noreferrer">配信で聴く</a>
+          </div>
+        </div>
+      </section>
       <a class="btn btn-outline btn-block btn-wrap" href="https://x.com/latefolar" target="_blank" rel="noopener"><span class="nowrap">公開のお知らせを X で受け取る</span><span class="nowrap">(@latefolar)</span></a>
     </main>
     <div class="actions">

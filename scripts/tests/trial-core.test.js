@@ -216,3 +216,79 @@ test('感想の長さ: 絵文字も1文字として数え、500文字で切る',
   // 500文字でもリンクの長さは、ふつうのブラウザで開ける長さに収まる
   assert.ok(core.buildFeedbackUrl({ willUse: '今はいい', source: 'その他', comment: 'あ'.repeat(500) }).length < 5000);
 });
+
+// ---------- シェア ----------
+
+const SHARE_HEAD = 'ラテフォラールの体験版で、働いた時間がお給料になって増えていくのを見てみました。';
+const SHARE_TAIL = ' #ラテフォラール体験版 https://latefolar.com/try/';
+
+test('シェアの文: チェックなしなら、金額を入れない', () => {
+  assert.equal(core.buildShareText(false, 9600), SHARE_HEAD + SHARE_TAIL);
+  assert.equal(core.buildShareText(false), SHARE_HEAD + SHARE_TAIL);
+});
+
+test('シェアの文: チェックありなら、「見てみました。」の後に金額を入れる', () => {
+  assert.equal(core.buildShareText(true, 9600), SHARE_HEAD + '今回は ¥9,600 になりました。' + SHARE_TAIL);
+});
+
+test('シェアの文: 金額は「今回の給料」と同じ円までの表示(3けた区切り)', () => {
+  assert.equal(core.buildShareText(true, 1234567), SHARE_HEAD + '今回は ¥1,234,567 になりました。' + SHARE_TAIL);
+  assert.equal(core.buildShareText(true, 999), SHARE_HEAD + '今回は ¥999 になりました。' + SHARE_TAIL);
+  assert.ok(core.buildShareText(true, 9600).includes(core.formatYen(9600)));
+});
+
+test('シェアの文: 0円でも金額を入れる', () => {
+  assert.equal(core.buildShareText(true, 0), SHARE_HEAD + '今回は ¥0 になりました。' + SHARE_TAIL);
+});
+
+test('シェアの文: 金額が正しい数でなければ、金額の文を入れない', () => {
+  for (const bad of [undefined, null, NaN, Infinity, -1, '9600']) {
+    assert.equal(core.buildShareText(true, bad), SHARE_HEAD + SHARE_TAIL);
+  }
+});
+
+test('X の投稿画面: x.com/intent/tweet に、文を text だけに入れる', () => {
+  for (const text of [core.buildShareText(false, 0), core.buildShareText(true, 1234567)]) {
+    const url = core.buildXShareUrl(text);
+    assert.ok(url.startsWith('https://x.com/intent/tweet?text='));
+    const u = new URL(url);
+    assert.equal(u.origin + u.pathname, 'https://x.com/intent/tweet');
+    assert.deepEqual([...u.searchParams.keys()], ['text']);
+    assert.equal(u.searchParams.get('text'), text);
+    // # や & をそのまま入れない(URL エンコードする)
+    assert.ok(url.includes('%23'));
+    assert.ok(!url.slice(url.indexOf('?') + 1).includes('#'));
+  }
+});
+
+// X の数え方(日本語などは2、URL は 23)で数える
+function xWeightedLength(text) {
+  const urlPattern = /https?:\/\/\S+/g;
+  let n = 0;
+  for (const m of text.match(urlPattern) || []) n += 23;
+  for (const ch of text.replace(urlPattern, '')) {
+    const c = ch.codePointAt(0);
+    const light = c <= 4351 || (c >= 8192 && c <= 8205) || (c >= 8208 && c <= 8223) || (c >= 8242 && c <= 8247);
+    n += light ? 1 : 2;
+  }
+  return n;
+}
+
+test('シェアの文: 金額ありでも、X の 280 文字に収まる', () => {
+  assert.ok(xWeightedLength(core.buildShareText(true, 7 * 100000 * 24 * 365)) <= 280);
+  assert.ok(xWeightedLength(core.buildShareText(false)) <= 280);
+});
+
+test('シェアの文: ハッシュタグの前に半角スペースがある(X がハッシュタグとして扱うため)', () => {
+  for (const text of [core.buildShareText(false), core.buildShareText(true, 9600), core.buildShareText(true, 0)]) {
+    const i = text.indexOf('#');
+    assert.ok(i > 1);
+    assert.equal(text.split('#').length, 2);
+    assert.equal(text[i - 1], ' ');
+    assert.equal(text.slice(i - 2, i + 1), '。 #');
+    // X の URL の text でも同じ
+    assert.equal(new URL(core.buildXShareUrl(text)).searchParams.get('text').slice(i - 1, i + 1), ' #');
+    // URL の前にも半角スペースがある
+    assert.ok(text.includes('#ラテフォラール体験版 https://latefolar.com/try/'));
+  }
+});

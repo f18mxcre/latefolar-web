@@ -30,6 +30,12 @@
     comment: { entry: "entry.685114059" }
   };
 
+  // シェアの文。X の投稿画面の URL の形は、X の公式の案内(Web Intent)に合わせる
+  // https://docs.x.com/x-for-websites/post-button/guides/web-intent
+  var SHARE_TRY_URL = "https://latefolar.com/try/";
+  var SHARE_HASHTAG = "#ラテフォラール体験版";
+  var X_INTENT_URL = "https://x.com/intent/tweet";
+
   // 文字の数。絵文字なども1文字として数える(コードポイント単位)
   function countChars(text) {
     return Array.from(String(text)).length;
@@ -192,6 +198,20 @@
     return FORM_URL + "?" + params.join("&");
   }
 
+  // シェアする文。金額は、本人がチェックを入れたときだけ入れる(「今回の給料」と同じ円までの表示)
+  function buildShareText(includeAmount, amount) {
+    var text = "ラテフォラールの体験版で、働いた時間がお給料になって増えていくのを見てみました。";
+    if (includeAmount === true && typeof amount === "number" && isFinite(amount) && amount >= 0) {
+      text += "今回は " + formatYen(Math.floor(amount)) + " になりました。";
+    }
+    return text + " " + SHARE_HASHTAG + " " + SHARE_TRY_URL;
+  }
+
+  // X の投稿画面の URL。文は text だけに入れる(UTF-8 で URL エンコード)
+  function buildXShareUrl(text) {
+    return X_INTENT_URL + "?text=" + encodeURIComponent(String(text));
+  }
+
   return {
     WAGE_MIN: WAGE_MIN,
     WAGE_MAX: WAGE_MAX,
@@ -201,6 +221,8 @@
     AWAY_NOTICE_MS: AWAY_NOTICE_MS,
     FORM_URL: FORM_URL,
     FEEDBACK_QUESTIONS: FEEDBACK_QUESTIONS,
+    SHARE_TRY_URL: SHARE_TRY_URL,
+    X_INTENT_URL: X_INTENT_URL,
     countChars: countChars,
     truncateChars: truncateChars,
     parseWageInput: parseWageInput,
@@ -220,6 +242,8 @@
     addToHistory: addToHistory,
     progressRatio: progressRatio,
     awayMs: awayMs,
-    buildFeedbackUrl: buildFeedbackUrl
+    buildFeedbackUrl: buildFeedbackUrl,
+    buildShareText: buildShareText,
+    buildXShareUrl: buildXShareUrl
   };
 });
