@@ -111,6 +111,9 @@
   var comment = $("comment");
   var sendLink = $("send-feedback");
   var sendNote = $("send-note");
+  var shareAmount = $("share-amount");
+  var shareX = $("share-x");
+  var shareOther = $("share-other");
 
   var state = loadState();
   var answers = { willUse: null, source: null, comment: "" };
@@ -191,6 +194,7 @@
     } else if (phase === "done") {
       setText("done-amount", core.formatYen(state.result.amount));
       setText("done-today", core.formatYen(state.result.todayAmount));
+      updateShare();
     }
   }
 
@@ -321,6 +325,8 @@
     updateCount();
     sendNote.hidden = true;
     updateSendLink();
+    // 金額を入れるかは保存しない。退勤するたび・開くたびに、チェックなしから始める
+    shareAmount.checked = false;
   }
 
   function updateCount() {
@@ -358,6 +364,40 @@
     sendNote.hidden = false;
   });
 
+  // ---------- T5 シェア ----------
+  // 外へは、ボタンを押したときだけ渡す(X の投稿画面を開く/端末の共有メニューを開く)
+
+  function currentShareText() {
+    var amount = state.result ? state.result.amount : null;
+    return core.buildShareText(shareAmount.checked, amount);
+  }
+
+  function updateShare() {
+    var text = currentShareText();
+    setText("share-text", text);
+    var href = core.buildXShareUrl(text);
+    if (shareX.getAttribute("href") !== href) {
+      shareX.setAttribute("href", href);
+    }
+  }
+
+  shareAmount.addEventListener("change", updateShare);
+
+  // 共有メニューが使えないブラウザでは「ほかのアプリ」を出さない(「X でシェア」が横いっぱいになる)
+  if (typeof navigator.share === "function") {
+    shareOther.hidden = false;
+    shareOther.addEventListener("click", function () {
+      try {
+        var p = navigator.share({ text: currentShareText() });
+        if (p && typeof p.catch === "function") {
+          p.catch(function () {}); // 閉じた・取り消したときは何もしない
+        }
+      } catch (e) {
+        // 開けなかったときも何もしない
+      }
+    });
+  }
+
   $("close-done").addEventListener("click", function () {
     state.result = null;
     go("idle");
@@ -383,6 +423,7 @@
   if (state.phase === "done") {
     resetFeedback();
   }
+  shareAmount.checked = false;
   updateCount();
   updateSendLink();
   saveState();
